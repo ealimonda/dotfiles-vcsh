@@ -1,0 +1,3 @@
+# Global excludes, on all systems
+# Generic files
+.DS_Store
