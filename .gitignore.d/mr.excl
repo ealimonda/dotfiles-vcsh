@@ -1,2 +1,10 @@
+.config/mr/config.d/*.vcsh
+.config/vcsh/repo.d/*.git
 .gitignore.d/_local
 .gitignore.d/*.incl
+.gitignore.d/dotfiles
+.gitignore.d/dotfiles-osx
+.gitignore.d/dotfiles-restricted
+.gitignore.d/dotfiles-secret
+.gitignore.d/mr
+

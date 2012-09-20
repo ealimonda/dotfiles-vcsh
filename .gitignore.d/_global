@@ -1,3 +1,11 @@
 # Global excludes, on all systems
-# Generic files
 .DS_Store
+*~
+*.pid
+*.sw[a-z]
+/.AppleDB
+/.AppleDesktop
+/.AppleDouble
+/.VolumeIcon.icns
+/Network\ Trash\ Folder
+/Temporary\ Items

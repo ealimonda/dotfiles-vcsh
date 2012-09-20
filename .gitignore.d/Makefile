@@ -30,7 +30,7 @@ includedfiles: $(addsuffix .incl, $(REPOS))
 	@DUPES="$$(cat *.incl | egrep -v '(^#|^\s*$$)' | sort | uniq -d | wc -l | tr -d ' ')"; \
 	      if [ "$$DUPES" -gt 0 ]; then\
 	        echo "Found $$DUPES files living in multiple repositories:";\
-		cat *.incl egrep -v '(^#|^\s*$$)' | sort | uniq -d;\
+		cat *.incl | egrep -v '(^#|^\s*$$)' | sort | uniq -d;\
 		exit 1;\
 	      fi
 
