@@ -1,2 +1,0 @@
-[$HOME/.config/vcsh/repo.d/dotfiles-osx.git]
-checkout = vcsh clone git://git.dotalux.com/dotfiles-osx.git dotfiles-osx

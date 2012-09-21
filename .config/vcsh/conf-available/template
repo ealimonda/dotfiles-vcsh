@@ -1,0 +1,5 @@
+REPO_NAME=ExampleRepository
+REPO_URL="Enter here the repository clone URL"
+REPO_DEPS="space-separated dependency list, or blank"
+BOOTSTRAP_URL="Enter here the repository final URL, after bootstrapping, if any"
+BOOTSTRAP_DEPS="space-separated bootstrap dependency list, or blank"

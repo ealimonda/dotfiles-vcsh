@@ -1,2 +1,0 @@
-[$HOME/.config/vcsh/repo.d/dotfiles.git]
-checkout = vcsh clone ealimonda.github.com:ealimonda/dotfiles.git dotfiles

@@ -8,11 +8,11 @@
 
 # All the repos
 REPOS  =
-REPOS += mr
 REPOS += dotfiles
 REPOS += dotfiles-osx
 REPOS += dotfiles-restricted
 REPOS += dotfiles-secret
+REPOS += dotfiles-vcsh
 
 INCLUDEFILES = $(addsuffix .incl, $(REPOS))
 EXCLUDEFILES = $(addsuffix .excl, $(REPOS))

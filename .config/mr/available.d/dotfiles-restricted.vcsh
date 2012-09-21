@@ -1,2 +1,0 @@
-[$HOME/.config/vcsh/repo.d/dotfiles-restricted.git]
-checkout = vcsh clone git://git.dotalux.com/dotfiles-restricted.git dotfiles-restricted
