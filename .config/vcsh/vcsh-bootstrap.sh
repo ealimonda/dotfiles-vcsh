@@ -58,12 +58,12 @@ linkrepo() {
 	local CONFENDIR="${CONFDIR}/conf-enabled"
 	[ "$VERBOSE" ] && echo "Linking repository $2 to $1"
 	[ -d "$CONFBSDIR" -a -d "$CONFENDIR" ] || abort "Missing directories in $CONFBSDIR and/or $CONFENDIR"
-	[ -f "${CONFDIR}/conf-available/$2.conf" ] || abort "Missing configuration for repository $2."
+	[ -f "${CONFDIR}/conf-available/$1.conf" ] || abort "Missing configuration for repository $1."
 	if [ "$2" == "all" -o "$2" == "enabled" ]; then
-		cd "${CONFENDIR}" && ln -sfn "../conf-available/$2.conf" "$2.conf"
+		cd "${CONFENDIR}" && ln -sfn "../conf-available/$1.conf" "$1.conf"
 	fi
 	if [ "$2" == "all" -o "$2" == "bootstrap" ]; then
-		cd "${CONFBSDIR}" && ln -sfn "../conf-available/$2.conf" "$2.conf"
+		cd "${CONFBSDIR}" && ln -sfn "../conf-available/$1.conf" "$1.conf"
 	fi
 }
 
