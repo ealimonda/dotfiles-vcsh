@@ -1,6 +1,14 @@
 #/bin/bash
 # vcsh-home bootstrap file
 
+# bash <(wget -qO- https://raw.github.com/ealimonda/dotfiles-vcsh/master/.config/vcsh/vcsh-bootstrap.sh) bootstrap
+# bash <(curl -s https://raw.github.com/ealimonda/dotfiles-vcsh/master/.config/vcsh/vcsh-bootstrap.sh) bootstrap
+# $HOME/.config/vcsh/vcsh-bootstrap.sh ls available
+# $HOME/.config/vcsh/vcsh-bootstrap.sh createlinks dotfiles all
+# ...
+# $HOME/.config/vcsh/vcsh-bootstrap.sh guess
+# ...
+
 SELF="$BASH_SOURCE"
 
 if [ "$1" == "-v" -o "$1" == "--verbose" ]; then
@@ -100,6 +108,10 @@ getrepos() {
 	if [ "$PENDING" -gt 0 ]; then
 		abort "No action taken.  Please check your repository dependencies."
 	fi
+
+	echo "Fixing user and email in all repos..."
+	vcsh-foreach config --local user.name Emanuele\ Alimonda
+	vcsh-foreach config --local user.email emanuele@alimonda.com
 	echo "Done.  No further action needed."
 }
 
@@ -149,7 +161,7 @@ getenabled() {
 			"A typical resolution workflow is:\n"\
 			" 1$ vcsh $EACH_REPO\n"\
 			" 2$ git pull\n"\
-			" 2$ git reset --mixed"\
+			" 2$ git reset --mixed\n"\
 			" 2$ git status # (add, rm, checkout files)\n"\
 			" 2$ <C-d>"
 		exit 0
@@ -203,7 +215,7 @@ getbootstrap() {
 		cd
 		vcsh run "$EACH_REPO" git remote set-url origin "$BOOTSTRAP_URL"
 		unlinkrepo "$EACH_REPO"
-		echo -e "\nDone.  Please check the log for errors, then rerun this command again"
+		echo -e "\nDone.  Please check the log for any errors, then rerun this command again"
 		exit 0
 	done
 	return $RETVAL
@@ -223,7 +235,44 @@ guess() {
 	fi
 }
 
-[ -z "$1" ] && abort "What do you want to do? (bootstrap|get|continue)"
+list() {
+	local CONFAVDIR="${CONFDIR}/conf-available"
+	local CONFBSDIR="${CONFDIR}/conf-bootstrap"
+	local CONFENDIR="${CONFDIR}/conf-enabled"
+	[ -d "$CONFAVDIR" -a -d "$CONFBSDIR" -a -d "$CONFENDIR" ] || abort "Missing directories in $CONFBSDIR and/or $CONFENDIR"
+	case "$1" in
+		available)
+			cd "$CONFAVDIR"
+			;;
+		enabled)
+			cd "$CONFENDIR"
+			;;
+		bootstrap)
+			cd "$CONFBSDIR"
+			;;
+		*)
+			return
+			;;
+	esac
+	ls *.conf | sed s/\.conf$//
+}
+
+usage() {
+	abort -e "What do you want to do?\n"\
+		"Usage:\n"\
+		"- $SELF bootstrap\n"\
+		"  Start the bootstrap process\n"\
+		"- $SELF get\n"\
+		"  Fetch the next repository available or bootstraps one\n"\
+		"- $SELF (createlinks|ln) <repo-name> (bootstrap|enabled|all|remove)\n"\
+		"  Create links for repository repo-name in bootstrap / enabled / both directories, or delete links\n"\
+		"- $SELF (list|ls) [available|enabled|bootstrap]\n"\
+		"  List the available, enabled pending bootstrap repositories (if omitted, defaults to available)\n"\
+		"- $SELF (guess|next)\n"\
+		"  Auto-guess the next operation to do"
+}
+
+[ -z "$1" ] && usage
 
 WORKDIR="${HOME}/.dotfiles.d"
 CONFDIR="${HOME}/.config/vcsh"
@@ -231,7 +280,7 @@ CONFREPO="dotfiles-vcsh"
 [ "$VERBOSE" ] && echo -e "\$WORKDIR=$WORKDIR\n\$CONFDIR=$CONFDIR"
 
 case "$1" in
-	guess)
+	guess|next)
 		[ "$VERBOSE" ] && echo -e "Running in guess mode"
 		guess
 		;;
@@ -242,6 +291,36 @@ case "$1" in
 	get)
 		[ "$VERBOSE" ] && echo -e "Running in get mode"
 		getrepos
+		;;
+	ls|list)
+		if [ -n "$2" ]; then
+			MODE="$2"
+		else
+			MODE="available"
+		fi
+		case "$MODE" in
+			available|bootstrap|enabled)
+				list $MODE
+				;;
+			*)
+				usage
+				;;
+		esac
+		;;
+	ln|createlinks)
+		[ $"VERBOSE" ]] && echo -e "Running in createlinks mode"
+		[ -n "$2" -o "$3" ] && usage
+		case "$3" in
+			all|bootstrap|enabled)
+				createlinks "$2" $3
+				;;
+			remove)
+				unlinkrepo "$2"
+				;;
+			*)
+				usage
+				;;
+		esac
 		;;
 esac
 
